@@ -21,13 +21,15 @@ class DashboardScreen extends StatelessWidget {
       ),
       const _DashboardItem(
         title: 'Antecedentes',
-        subtitle: 'Enfermedades y cirugías',
+        subtitle: 'Diagnósticos y condiciones',
         icon: AppIcons.medicalHistory,
+        routeName: AppRoutes.medicalHistory,
       ),
       const _DashboardItem(
         title: 'Alergias',
         subtitle: 'Alertas importantes',
         icon: AppIcons.allergies,
+        routeName: AppRoutes.allergies,
       ),
       const _DashboardItem(
         title: 'Medicamentos',
