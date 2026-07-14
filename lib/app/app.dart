@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../features/dashboard/screens/dashboard_screen.dart';
+import '../core/constants/app_constants.dart';
+import '../core/services/navigation_service.dart';
+import 'routes.dart';
 import 'theme.dart';
 
 class MiSaludApp extends StatelessWidget {
@@ -9,10 +11,12 @@ class MiSaludApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'MiSalud VortexIT',
+      title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
+      navigatorKey: NavigationService.navigatorKey,
       theme: AppTheme.lightTheme,
-      home: const DashboardScreen(),
+      initialRoute: AppRoutes.dashboard,
+      routes: AppRoutes.routes,
     );
   }
 }
