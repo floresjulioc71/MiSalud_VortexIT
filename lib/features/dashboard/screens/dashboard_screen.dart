@@ -1,181 +1,76 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/constants/app_icons.dart';
+import '../../../core/constants/app_spacing.dart';
+
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('MiSalud VortexIT'),
+        title: const Text(AppConstants.appName),
         actions: [
           IconButton(
             tooltip: 'Configuración',
+            icon: const Icon(AppIcons.settings),
             onPressed: () {
-              _showPendingMessage(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text(AppConstants.pendingModule)),
+              );
             },
-            icon: const Icon(Icons.settings_outlined),
           ),
         ],
       ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            _WelcomeCard(colorScheme: colorScheme),
-            const SizedBox(height: 24),
-            Text(
-              'Mi información médica',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 14),
-            GridView.count(
-              crossAxisCount: _calculateColumns(context),
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 1.15,
-              children: [
-                _DashboardOption(
-                  title: 'Perfil médico',
-                  subtitle: 'Datos personales y contacto',
-                  icon: Icons.badge_outlined,
-                  onTap: () => _showPendingMessage(context),
-                ),
-                _DashboardOption(
-                  title: 'Antecedentes',
-                  subtitle: 'Enfermedades y cirugías',
-                  icon: Icons.medical_information_outlined,
-                  onTap: () => _showPendingMessage(context),
-                ),
-                _DashboardOption(
-                  title: 'Alergias',
-                  subtitle: 'Alertas importantes',
-                  icon: Icons.warning_amber_rounded,
-                  onTap: () => _showPendingMessage(context),
-                ),
-                _DashboardOption(
-                  title: 'Medicamentos',
-                  subtitle: 'Tratamientos actuales',
-                  icon: Icons.medication_outlined,
-                  onTap: () => _showPendingMessage(context),
-                ),
-                _DashboardOption(
-                  title: 'Vacunas',
-                  subtitle: 'Registro de inmunizaciones',
-                  icon: Icons.vaccines_outlined,
-                  onTap: () => _showPendingMessage(context),
-                ),
-                _DashboardOption(
-                  title: 'Estudios',
-                  subtitle: 'Informes y documentos',
-                  icon: Icons.description_outlined,
-                  onTap: () => _showPendingMessage(context),
-                ),
-                _DashboardOption(
-                  title: 'Médicos',
-                  subtitle: 'Profesionales tratantes',
-                  icon: Icons.medical_services_outlined,
-                  onTap: () => _showPendingMessage(context),
-                ),
-                _DashboardOption(
-                  title: 'Controles',
-                  subtitle: 'Peso, presión y glucemia',
-                  icon: Icons.monitor_heart_outlined,
-                  onTap: () => _showPendingMessage(context),
-                ),
-                _DashboardOption(
-                  title: 'Informe PDF',
-                  subtitle: 'Resumen médico personal',
-                  icon: Icons.picture_as_pdf_outlined,
-                  onTap: () => _showPendingMessage(context),
-                ),
-                _DashboardOption(
-                  title: 'Respaldo',
-                  subtitle: 'Exportar y restaurar datos',
-                  icon: Icons.cloud_sync_outlined,
-                  onTap: () => _showPendingMessage(context),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            _PrivacyNotice(colorScheme: colorScheme),
-          ],
-        ),
+      body: ListView(
+        padding: const EdgeInsets.all(AppSpacing.large),
+        children: const [
+          _WelcomeCard(),
+          SizedBox(height: AppSpacing.xLarge),
+          _SectionTitle(),
+          SizedBox(height: AppSpacing.large),
+          _DashboardGrid(),
+          SizedBox(height: AppSpacing.xLarge),
+          _PrivacyCard(),
+        ],
       ),
     );
-  }
-
-  static int _calculateColumns(BuildContext context) {
-    final double width = MediaQuery.sizeOf(context).width;
-
-    if (width >= 1000) {
-      return 4;
-    }
-
-    if (width >= 650) {
-      return 3;
-    }
-
-    return 2;
-  }
-
-  static void _showPendingMessage(BuildContext context) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(
-          content: Text('Este módulo será incorporado en los próximos builds.'),
-        ),
-      );
   }
 }
 
 class _WelcomeCard extends StatelessWidget {
-  final ColorScheme colorScheme;
-
-  const _WelcomeCard({required this.colorScheme});
+  const _WelcomeCard();
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: colorScheme.primaryContainer,
+      color: Theme.of(context).colorScheme.primaryContainer,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.large),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
               radius: 30,
-              backgroundColor: colorScheme.primary,
-              foregroundColor: colorScheme.onPrimary,
-              child: const Icon(Icons.health_and_safety_outlined, size: 34),
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              child: Icon(AppIcons.medicalHistory, size: 34),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: AppSpacing.large),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Tu salud, siempre organizada',
+                    AppConstants.welcomeTitle,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: colorScheme.onPrimaryContainer,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Registra y consulta tu información médica personal '
-                    'de forma clara, privada y segura.',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onPrimaryContainer,
-                    ),
-                  ),
+                  SizedBox(height: AppSpacing.small),
+                  Text(AppConstants.welcomeMessage),
                 ],
               ),
             ),
@@ -186,80 +81,92 @@ class _WelcomeCard extends StatelessWidget {
   }
 }
 
-class _DashboardOption extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _DashboardOption({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.onTap,
-  });
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle();
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(icon, size: 34, color: colorScheme.primary),
-              const Spacer(),
-              Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return Text(
+      AppConstants.dashboardTitle,
+      style: Theme.of(
+        context,
+      ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
     );
   }
 }
 
-class _PrivacyNotice extends StatelessWidget {
-  final ColorScheme colorScheme;
+class _DashboardGrid extends StatelessWidget {
+  const _DashboardGrid();
 
-  const _PrivacyNotice({required this.colorScheme});
+  @override
+  Widget build(BuildContext context) {
+    final items = const [
+      ('Perfil médico', AppIcons.profile),
+      ('Antecedentes', AppIcons.medicalHistory),
+      ('Alergias', AppIcons.allergies),
+      ('Medicamentos', AppIcons.medications),
+      ('Vacunas', AppIcons.vaccines),
+      ('Estudios', AppIcons.studies),
+      ('Médicos', AppIcons.doctors),
+      ('Controles', AppIcons.controls),
+      ('Informe PDF', AppIcons.reports),
+      ('Respaldo', AppIcons.backup),
+    ];
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: AppSpacing.medium,
+        mainAxisSpacing: AppSpacing.medium,
+        childAspectRatio: 1.2,
+      ),
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return Card(
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text(AppConstants.pendingModule)),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.medium),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(item.$2, color: AppColors.primary, size: 34),
+                  const Spacer(),
+                  Text(
+                    item.$1,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PrivacyCard extends StatelessWidget {
+  const _PrivacyCard();
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: colorScheme.surfaceContainerHigh,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.large),
         child: Row(
-          children: [
-            Icon(Icons.lock_outline, color: colorScheme.primary),
-            const SizedBox(width: 12),
-            const Expanded(
-              child: Text(
-                'La información se almacenará localmente y será protegida '
-                'con las medidas de seguridad de la aplicación.',
-              ),
-            ),
+          children: const [
+            Icon(AppIcons.security),
+            SizedBox(width: AppSpacing.medium),
+            Expanded(child: Text(AppConstants.privacyNotice)),
           ],
         ),
       ),
