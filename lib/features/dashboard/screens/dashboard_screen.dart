@@ -35,6 +35,7 @@ class DashboardScreen extends StatelessWidget {
         title: 'Medicamentos',
         subtitle: 'Tratamientos actuales',
         icon: AppIcons.medications,
+        routeName: AppRoutes.medications,
       ),
       const _DashboardItem(
         title: 'Vacunas',

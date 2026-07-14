@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../features/allergies/screens/allergy_screen.dart';
 import '../features/dashboard/screens/dashboard_screen.dart';
 import '../features/medical_history/screens/medical_history_screen.dart';
+import '../features/medications/screens/medication_screen.dart';
 import '../features/profile/screens/profile_screen.dart';
 
 class AppRoutes {
@@ -12,6 +13,7 @@ class AppRoutes {
   static const String profile = '/profile';
   static const String medicalHistory = '/medical-history';
   static const String allergies = '/allergies';
+  static const String medications = '/medications';
 
   static Map<String, WidgetBuilder> get routes {
     return <String, WidgetBuilder>{
@@ -19,6 +21,7 @@ class AppRoutes {
       profile: (BuildContext context) => const ProfileScreen(),
       medicalHistory: (BuildContext context) => const MedicalHistoryScreen(),
       allergies: (BuildContext context) => const AllergyScreen(),
+      medications: (BuildContext context) => const MedicationScreen(),
     };
   }
 }
