@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../features/dashboard/screens/dashboard_screen.dart';
+import '../features/profile/screens/profile_screen.dart';
 
 class AppRoutes {
   AppRoutes._();
 
   static const String dashboard = '/';
+  static const String profile = '/profile';
 
   static Map<String, WidgetBuilder> get routes {
-    return {dashboard: (BuildContext context) => const DashboardScreen()};
+    return <String, WidgetBuilder>{
+      dashboard: (BuildContext context) => const DashboardScreen(),
+      profile: (BuildContext context) => const ProfileScreen(),
+    };
   }
 }
