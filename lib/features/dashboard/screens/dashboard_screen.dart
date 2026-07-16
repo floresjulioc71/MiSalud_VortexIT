@@ -54,6 +54,7 @@ class DashboardScreen extends StatelessWidget {
         title: 'Vacunas',
         subtitle: 'Registro de inmunizaciones',
         icon: AppIcons.vaccines,
+        routeName: AppRoutes.vaccines,
       ),
       const _DashboardItem(
         title: 'Estudios',
