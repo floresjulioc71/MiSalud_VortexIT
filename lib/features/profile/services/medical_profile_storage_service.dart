@@ -1,10 +1,14 @@
 import '../../../core/storage/app_storage.dart';
+import '../../family/services/family_storage_service.dart';
 import '../models/medical_profile.dart';
 
 class MedicalProfileStorageService {
   MedicalProfileStorageService._();
 
-  static const String _profileKey = 'medical_profile';
+  static const String _baseProfileKey = 'medical_profile';
+
+  static String get _profileKey =>
+      FamilyStorageService.scopedKey(_baseProfileKey);
 
   static MedicalProfile loadProfile() {
     final String? storedProfile = AppStorage.readString(_profileKey);
