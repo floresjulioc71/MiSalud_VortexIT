@@ -1,12 +1,18 @@
 import '../../../core/storage/app_storage.dart';
+import '../../family/services/family_storage_service.dart';
 import '../models/medical_history_item.dart';
 
 class MedicalHistoryStorageService {
   MedicalHistoryStorageService._();
 
-  static const String _storageKey = 'medical_history_items';
+  static const String _legacyStorageKey = 'medical_history_items';
+
+  static String get _storageKey =>
+      FamilyStorageService.scopedKey(_legacyStorageKey);
 
   static List<MedicalHistoryItem> loadItems() {
+    _migrateLegacyData();
+
     final List<String>? storedItems = AppStorage.readStringList(_storageKey);
 
     if (storedItems == null || storedItems.isEmpty) {
@@ -62,5 +68,20 @@ class MedicalHistoryStorageService {
       ..removeWhere((MedicalHistoryItem item) => item.id == id);
 
     await saveItems(items);
+  }
+
+  static void _migrateLegacyData() {
+    if (AppStorage.containsKey(_storageKey)) {
+      return;
+    }
+
+    final List<String>? legacy = AppStorage.readStringList(_legacyStorageKey);
+
+    if (legacy == null || legacy.isEmpty) {
+      return;
+    }
+
+    AppStorage.saveStringList(_storageKey, legacy);
+    AppStorage.remove(_legacyStorageKey);
   }
 }

@@ -15,7 +15,7 @@ class MiSaludApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: NavigationService.navigatorKey,
       theme: AppTheme.lightTheme,
-      initialRoute: AppRoutes.dashboard,
+      initialRoute: AppRoutes.familySelector,
       routes: AppRoutes.routes,
     );
   }

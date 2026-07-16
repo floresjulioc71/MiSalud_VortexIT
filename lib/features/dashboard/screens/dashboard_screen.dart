@@ -6,9 +6,16 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/services/navigation_service.dart';
+import '../../family/services/family_storage_service.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
+
+  Future<void> _changeMember() async {
+    await NavigationService.pushReplacementNamed<void, void>(
+      AppRoutes.familySelector,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,21 +76,63 @@ class DashboardScreen extends StatelessWidget {
       ),
     ];
 
+    final String activeName = FamilyStorageService.activeMember.name;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppConstants.appName),
+        title: Text(activeName),
+        leading: IconButton(
+          tooltip: 'Cambiar integrante',
+          onPressed: _changeMember,
+          icon: const Icon(Icons.groups_outlined),
+        ),
         actions: [
           IconButton(
-            tooltip: 'Configuración',
-            icon: const Icon(AppIcons.settings),
-            onPressed: () => _showPendingMessage(context),
+            tooltip: 'Administrar grupo familiar',
+            onPressed: () {
+              NavigationService.pushNamed<void>(AppRoutes.family);
+            },
+            icon: const Icon(Icons.manage_accounts_outlined),
           ),
         ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.large),
         children: [
-          const _WelcomeCard(),
+          Card(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.large),
+              child: Row(
+                children: [
+                  const CircleAvatar(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    child: Icon(Icons.person_outline),
+                  ),
+                  const SizedBox(width: AppSpacing.medium),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Historia clínica de'),
+                        Text(
+                          activeName,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Cambiar integrante',
+                    onPressed: _changeMember,
+                    icon: const Icon(Icons.swap_horiz),
+                  ),
+                ],
+              ),
+            ),
+          ),
           const SizedBox(height: AppSpacing.xLarge),
           Text(
             AppConstants.dashboardTitle,
@@ -110,8 +159,6 @@ class DashboardScreen extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(height: AppSpacing.xLarge),
-          const _PrivacyCard(),
         ],
       ),
     );
@@ -121,9 +168,11 @@ class DashboardScreen extends StatelessWidget {
     if (width >= 1000) {
       return 4;
     }
+
     if (width >= 650) {
       return 3;
     }
+
     return 2;
   }
 
@@ -131,46 +180,6 @@ class DashboardScreen extends StatelessWidget {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(const SnackBar(content: Text(AppConstants.pendingModule)));
-  }
-}
-
-class _WelcomeCard extends StatelessWidget {
-  const _WelcomeCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).colorScheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.large),
-        child: Row(
-          children: [
-            const CircleAvatar(
-              radius: 30,
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              child: Icon(AppIcons.medicalHistory, size: 34),
-            ),
-            const SizedBox(width: AppSpacing.large),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppConstants.welcomeTitle,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.small),
-                  const Text(AppConstants.welcomeMessage),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
 
@@ -189,6 +198,7 @@ class _DashboardCard extends StatelessWidget {
             NavigationService.pushNamed<void>(item.routeName!);
             return;
           }
+
           DashboardScreen._showPendingMessage(context);
         },
         child: Padding(
@@ -233,24 +243,4 @@ class _DashboardItem {
     required this.icon,
     this.routeName,
   });
-}
-
-class _PrivacyCard extends StatelessWidget {
-  const _PrivacyCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Card(
-      child: Padding(
-        padding: EdgeInsets.all(AppSpacing.large),
-        child: Row(
-          children: [
-            Icon(AppIcons.security),
-            SizedBox(width: AppSpacing.medium),
-            Expanded(child: Text(AppConstants.privacyNotice)),
-          ],
-        ),
-      ),
-    );
-  }
 }
