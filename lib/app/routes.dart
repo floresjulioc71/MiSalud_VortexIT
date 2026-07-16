@@ -7,6 +7,7 @@ import '../features/family/screens/family_selector_screen.dart';
 import '../features/medical_history/screens/medical_history_screen.dart';
 import '../features/medications/screens/medication_screen.dart';
 import '../features/profile/screens/profile_screen.dart';
+import '../features/studies/screens/study_screen.dart';
 import '../features/surgeries/screens/surgery_screen.dart';
 import '../features/vaccines/screens/vaccine_screen.dart';
 
@@ -22,6 +23,7 @@ class AppRoutes {
   static const String medications = '/medications';
   static const String surgeries = '/surgeries';
   static const String vaccines = '/vaccines';
+  static const String studies = '/studies';
 
   static Map<String, WidgetBuilder> get routes {
     return <String, WidgetBuilder>{
@@ -34,6 +36,7 @@ class AppRoutes {
       medications: (BuildContext context) => const MedicationScreen(),
       surgeries: (BuildContext context) => const SurgeryScreen(),
       vaccines: (BuildContext context) => const VaccineScreen(),
+      studies: (BuildContext context) => const StudyScreen(),
     };
   }
 }

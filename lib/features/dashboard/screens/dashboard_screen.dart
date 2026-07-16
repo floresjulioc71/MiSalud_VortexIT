@@ -60,6 +60,7 @@ class DashboardScreen extends StatelessWidget {
         title: 'Estudios',
         subtitle: 'Informes y documentos',
         icon: AppIcons.studies,
+        routeName: AppRoutes.studies,
       ),
       const _DashboardItem(
         title: 'Médicos',
