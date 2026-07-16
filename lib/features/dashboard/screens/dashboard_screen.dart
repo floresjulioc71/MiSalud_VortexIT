@@ -66,6 +66,7 @@ class DashboardScreen extends StatelessWidget {
         title: 'Médicos',
         subtitle: 'Profesionales tratantes',
         icon: AppIcons.doctors,
+        routeName: AppRoutes.doctors,
       ),
       const _DashboardItem(
         title: 'Controles',
