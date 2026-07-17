@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../features/allergies/screens/allergy_screen.dart';
+import '../features/consultations/screens/consultation_screen.dart';
 import '../features/dashboard/screens/dashboard_screen.dart';
 import '../features/doctors/screens/doctor_screen.dart';
 import '../features/family/screens/family_screen.dart';
@@ -26,6 +27,7 @@ class AppRoutes {
   static const String vaccines = '/vaccines';
   static const String studies = '/studies';
   static const String doctors = '/doctors';
+  static const String consultations = '/consultations';
 
   static Map<String, WidgetBuilder> get routes {
     return <String, WidgetBuilder>{
@@ -40,6 +42,7 @@ class AppRoutes {
       vaccines: (BuildContext context) => const VaccineScreen(),
       studies: (BuildContext context) => const StudyScreen(),
       doctors: (BuildContext context) => const DoctorScreen(),
+      consultations: (BuildContext context) => const ConsultationScreen(),
     };
   }
 }

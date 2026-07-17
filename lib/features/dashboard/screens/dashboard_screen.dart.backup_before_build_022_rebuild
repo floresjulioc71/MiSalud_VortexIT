@@ -79,7 +79,6 @@ class DashboardScreen extends StatelessWidget {
         title: 'Controles',
         subtitle: 'Peso, presión y glucemia',
         icon: AppIcons.controls,
-        opensHealthControls: true,
       ),
       const _DashboardItem(
         title: 'Informe PDF',
@@ -211,10 +210,10 @@ class _DashboardCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
-          if (item.opensHealthControls) {
+          if (item.title == 'Controles') {
             Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const HealthControlsScreen(),
+                builder: (BuildContext context) => const HealthControlsScreen(),
               ),
             );
             return;
@@ -262,13 +261,11 @@ class _DashboardItem {
   final String subtitle;
   final IconData icon;
   final String? routeName;
-  final bool opensHealthControls;
 
   const _DashboardItem({
     required this.title,
     required this.subtitle,
     required this.icon,
     this.routeName,
-    this.opensHealthControls = false,
   });
 }

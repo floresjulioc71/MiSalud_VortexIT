@@ -214,7 +214,7 @@ class _DashboardCard extends StatelessWidget {
           if (item.opensHealthControls) {
             Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const HealthControlsScreen(),
+                builder: (BuildContext context) => const HealthControlsScreen(),
               ),
             );
             return;

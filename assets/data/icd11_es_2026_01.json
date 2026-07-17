@@ -1,0 +1,36 @@
+{
+  "source": "WHO ICD-11 MMS",
+  "release": "2026-01",
+  "language": "es",
+  "generated": false,
+  "entries": [
+    {
+      "id": "icd11-ba00",
+      "primarySystem": "icd11",
+      "primaryCode": "BA00",
+      "description": "Hipertensión esencial",
+      "icd10Code": "I10",
+      "snomedCtCode": "",
+      "icpc2Code": "",
+      "terminologyVersion": "CIE-11 2026-01",
+      "status": "active",
+      "origin": "selfRecord",
+      "diagnosisDate": null,
+      "notes": ""
+    },
+    {
+      "id": "icd11-5a11",
+      "primarySystem": "icd11",
+      "primaryCode": "5A11",
+      "description": "Diabetes mellitus tipo 2",
+      "icd10Code": "E11.9",
+      "snomedCtCode": "",
+      "icpc2Code": "",
+      "terminologyVersion": "CIE-11 2026-01",
+      "status": "active",
+      "origin": "selfRecord",
+      "diagnosisDate": null,
+      "notes": ""
+    }
+  ]
+}
