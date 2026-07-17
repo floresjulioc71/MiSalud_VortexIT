@@ -4,7 +4,6 @@ import '../models/health_control.dart';
 import '../services/health_control_pdf_service.dart';
 import '../services/health_control_storage_service.dart';
 import 'health_control_form_screen.dart';
-import 'health_controls_evolution_screen.dart';
 
 class HealthControlsScreen extends StatefulWidget {
   const HealthControlsScreen({super.key});
@@ -28,9 +27,7 @@ class _HealthControlsScreenState extends State<HealthControlsScreen> {
 
   Future<void> _reload() async {
     final List<HealthControl> items = HealthControlStorageService.loadItems();
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
     setState(() {
       _items = items;
       _loading = false;
@@ -43,12 +40,8 @@ class _HealthControlsScreenState extends State<HealthControlsScreen> {
       item.recordedAt.month,
       item.recordedAt.day,
     );
-    if (_dateFrom != null && day.isBefore(_dateFrom!)) {
-      return false;
-    }
-    if (_dateTo != null && day.isAfter(_dateTo!)) {
-      return false;
-    }
+    if (_dateFrom != null && day.isBefore(_dateFrom!)) return false;
+    if (_dateTo != null && day.isAfter(_dateTo!)) return false;
     return true;
   }).toList();
 
@@ -58,21 +51,7 @@ class _HealthControlsScreenState extends State<HealthControlsScreen> {
         builder: (_) => HealthControlFormScreen(item: item),
       ),
     );
-    if (changed == true) {
-      await _reload();
-    }
-  }
-
-  Future<void> _openEvolution() async {
-    await Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (_) => HealthControlsEvolutionScreen(
-          initialDateFrom: _dateFrom,
-          initialDateTo: _dateTo,
-        ),
-      ),
-    );
-    await _reload();
+    if (changed == true) await _reload();
   }
 
   Future<void> _delete(HealthControl item) async {
@@ -93,9 +72,7 @@ class _HealthControlsScreenState extends State<HealthControlsScreen> {
         ],
       ),
     );
-    if (confirmed != true) {
-      return;
-    }
+    if (confirmed != true) return;
     await HealthControlStorageService.deleteItem(item.id);
     await _reload();
   }
@@ -123,9 +100,7 @@ class _HealthControlsScreenState extends State<HealthControlsScreen> {
           ? DateTimeRange(start: _dateFrom!, end: _dateTo!)
           : null,
     );
-    if (range == null) {
-      return;
-    }
+    if (range == null) return;
     setState(() {
       _dateFrom = DateTime(
         range.start.year,
@@ -138,9 +113,7 @@ class _HealthControlsScreenState extends State<HealthControlsScreen> {
 
   Future<void> _export(String action) async {
     final List<HealthControl> items = _visibleItems;
-    if (items.isEmpty || _exporting) {
-      return;
-    }
+    if (items.isEmpty || _exporting) return;
     setState(() => _exporting = true);
     try {
       if (action == 'print') {
@@ -174,9 +147,7 @@ class _HealthControlsScreenState extends State<HealthControlsScreen> {
         );
       }
     } finally {
-      if (mounted) {
-        setState(() => _exporting = false);
-      }
+      if (mounted) setState(() => _exporting = false);
     }
   }
 
@@ -187,11 +158,6 @@ class _HealthControlsScreenState extends State<HealthControlsScreen> {
       appBar: AppBar(
         title: const Text('Controles de Salud'),
         actions: <Widget>[
-          IconButton(
-            tooltip: 'Ver evolución',
-            onPressed: _openEvolution,
-            icon: const Icon(Icons.insights_outlined),
-          ),
           PopupMenuButton<String>(
             tooltip: 'Exportar PDF',
             enabled: visible.isNotEmpty && !_exporting,
@@ -273,12 +239,7 @@ class _HealthControlsScreenState extends State<HealthControlsScreen> {
 class _FilterBar extends StatelessWidget {
   final DateTime? dateFrom;
   final DateTime? dateTo;
-  final VoidCallback onAll;
-  final VoidCallback on30;
-  final VoidCallback on90;
-  final VoidCallback onYear;
-  final VoidCallback onCustom;
-
+  final VoidCallback onAll, on30, on90, onYear, onCustom;
   const _FilterBar({
     required this.dateFrom,
     required this.dateTo,
@@ -288,7 +249,6 @@ class _FilterBar extends StatelessWidget {
     required this.onYear,
     required this.onCustom,
   });
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -321,8 +281,7 @@ class _FilterBar extends StatelessWidget {
             if (dateFrom != null || dateTo != null) ...<Widget>[
               const SizedBox(height: 8),
               Text(
-                'Período: ${dateFrom == null ? 'inicio' : _date(dateFrom!)} al '
-                '${dateTo == null ? 'hoy' : _date(dateTo!)}',
+                'Período: ${dateFrom == null ? 'inicio' : _date(dateFrom!)} al ${dateTo == null ? 'hoy' : _date(dateTo!)}',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
@@ -333,21 +292,17 @@ class _FilterBar extends StatelessWidget {
   }
 
   static String _date(DateTime d) =>
-      '${d.day.toString().padLeft(2, '0')}/'
-      '${d.month.toString().padLeft(2, '0')}/${d.year}';
+      '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
 }
 
 class _ControlCard extends StatelessWidget {
   final HealthControl item;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
-
+  final VoidCallback onEdit, onDelete;
   const _ControlCard({
     required this.item,
     required this.onEdit,
     required this.onDelete,
   });
-
   @override
   Widget build(BuildContext context) {
     final List<Widget> values = <Widget>[];
@@ -363,7 +318,6 @@ class _ControlCard extends StatelessWidget {
         ),
       ),
     );
-
     if (item.systolicPressure != null || item.diastolicPressure != null) {
       add(
         Icons.monitor_heart_outlined,
@@ -394,10 +348,7 @@ class _ControlCard extends StatelessWidget {
         '${item.bloodGlucose!.toStringAsFixed(0)} mg/dL',
       );
     }
-    if (item.notes.isNotEmpty) {
-      add(Icons.notes_outlined, item.notes);
-    }
-
+    if (item.notes.isNotEmpty) add(Icons.notes_outlined, item.notes);
     return Card(
       child: InkWell(
         onTap: onEdit,
@@ -418,13 +369,8 @@ class _ControlCard extends StatelessWidget {
                     ),
                   ),
                   PopupMenuButton<String>(
-                    onSelected: (String value) {
-                      if (value == 'edit') {
-                        onEdit();
-                      } else {
-                        onDelete();
-                      }
-                    },
+                    onSelected: (String value) =>
+                        value == 'edit' ? onEdit() : onDelete(),
                     itemBuilder: (_) => const <PopupMenuEntry<String>>[
                       PopupMenuItem(value: 'edit', child: Text('Editar')),
                       PopupMenuItem(value: 'delete', child: Text('Eliminar')),
@@ -441,23 +387,17 @@ class _ControlCard extends StatelessWidget {
   }
 
   static String _dateTime(DateTime d) =>
-      '${d.day.toString().padLeft(2, '0')}/'
-      '${d.month.toString().padLeft(2, '0')}/${d.year} '
-      '${d.hour.toString().padLeft(2, '0')}:'
-      '${d.minute.toString().padLeft(2, '0')}';
+      '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year} ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 }
 
 class _EmptyState extends StatelessWidget {
   final bool hasFilters;
-  final VoidCallback onAdd;
-  final VoidCallback onClear;
-
+  final VoidCallback onAdd, onClear;
   const _EmptyState({
     required this.hasFilters,
     required this.onAdd,
     required this.onClear,
   });
-
   @override
   Widget build(BuildContext context) => Center(
     child: Padding(
