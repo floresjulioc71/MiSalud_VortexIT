@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../vaccines/screens/vaccine_screen.dart';
+import '../../vaccines/screens/vaccines_screen.dart';
 
 import '../models/medical_study.dart';
 import '../services/medical_study_file_service.dart';
@@ -102,7 +102,7 @@ class _MedicalStudiesScreenState extends State<MedicalStudiesScreen> {
           IconButton(
             tooltip: 'Vacunas',
             onPressed: () => Navigator.of(context).push<void>(
-              MaterialPageRoute<void>(builder: (_) => const VaccineScreen()),
+              MaterialPageRoute<void>(builder: (_) => const VaccinesScreen()),
             ),
             icon: const Icon(Icons.vaccines_outlined),
           ),
