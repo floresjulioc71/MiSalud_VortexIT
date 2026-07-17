@@ -47,8 +47,6 @@ dependencies:
 
   printing: ^5.14.2
   file_selector: ^1.0.3
-  uuid: ^4.6.0
-  open_filex: ^4.7.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../medical_studies/screens/medical_studies_screen.dart';
-
 import '../models/health_control.dart';
 import '../services/health_control_pdf_service.dart';
 import '../services/health_control_storage_service.dart';
@@ -84,15 +82,6 @@ class _HealthControlsScreenState extends State<HealthControlsScreen> {
         title: const Text('Eliminar control'),
         content: const Text('Esta acción no se puede deshacer.'),
         actions: <Widget>[
-          IconButton(
-            tooltip: 'Estudios médicos',
-            onPressed: () => Navigator.of(context).push<void>(
-              MaterialPageRoute<void>(
-                builder: (_) => const MedicalStudiesScreen(),
-              ),
-            ),
-            icon: const Icon(Icons.biotech_outlined),
-          ),
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             child: const Text('Cancelar'),
