@@ -5,7 +5,6 @@ import '../services/clinical_document_file_service.dart';
 import '../services/clinical_document_storage_service.dart';
 import '../widgets/clinical_document_card.dart';
 import 'clinical_document_form_screen.dart';
-import 'clinical_document_view_screen.dart';
 
 class ClinicalDocumentsScreen extends StatefulWidget {
   final String memberId;
@@ -19,7 +18,6 @@ class ClinicalDocumentsScreen extends StatefulWidget {
 
 class _ClinicalDocumentsScreenState extends State<ClinicalDocumentsScreen> {
   final TextEditingController _searchController = TextEditingController();
-
   List<ClinicalDocument> _documents = <ClinicalDocument>[];
   ClinicalDocumentType? _selectedType;
   bool _loading = true;
@@ -38,11 +36,7 @@ class _ClinicalDocumentsScreenState extends State<ClinicalDocumentsScreen> {
 
   Future<void> _loadDocuments() async {
     await ClinicalDocumentStorageService.initialize();
-
-    if (!mounted) {
-      return;
-    }
-
+    if (!mounted) return;
     setState(() {
       _documents = ClinicalDocumentStorageService.loadItems();
       _loading = false;
@@ -51,17 +45,14 @@ class _ClinicalDocumentsScreenState extends State<ClinicalDocumentsScreen> {
 
   List<ClinicalDocument> get _filteredDocuments {
     final String query = _searchController.text.trim().toLowerCase();
-
     return _documents.where((ClinicalDocument document) {
       final bool matchesType =
           _selectedType == null || document.type == _selectedType;
-
       final bool matchesSearch =
           query.isEmpty ||
           document.title.toLowerCase().contains(query) ||
           document.professional.toLowerCase().contains(query) ||
           document.institution.toLowerCase().contains(query);
-
       return matchesType && matchesSearch;
     }).toList();
   }
@@ -69,99 +60,46 @@ class _ClinicalDocumentsScreenState extends State<ClinicalDocumentsScreen> {
   Future<void> _openForm([ClinicalDocument? document]) async {
     final bool? changed = await Navigator.of(context).push<bool>(
       MaterialPageRoute<bool>(
-        builder: (BuildContext context) {
-          return ClinicalDocumentFormScreen(
-            memberId: widget.memberId,
-            document: document,
-          );
-        },
+        builder: (_) => ClinicalDocumentFormScreen(
+          memberId: widget.memberId,
+          document: document,
+        ),
       ),
     );
-
-    if (changed == true) {
-      await _loadDocuments();
-    }
-  }
-
-  Future<void> _openDocument(ClinicalDocument document) async {
-    await Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (BuildContext viewContext) {
-          return ClinicalDocumentViewScreen(
-            document: document,
-            onEdit: () async {
-              Navigator.of(viewContext).pop();
-              await _openForm(document);
-            },
-          );
-        },
-      ),
-    );
-  }
-
-  Future<void> _shareDocument(ClinicalDocument document) async {
-    try {
-      await ClinicalDocumentFileService.shareStoredFile(
-        filePath: document.filePath,
-        title: document.title,
-      );
-    } on Object catch (error) {
-      if (!mounted) {
-        return;
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No se pudo compartir el archivo: $error')),
-      );
-    }
+    if (changed == true) await _loadDocuments();
   }
 
   Future<void> _deleteDocument(ClinicalDocument document) async {
     final bool? confirmed = await showDialog<bool>(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Eliminar documento'),
-          content: Text(
-            '¿Querés eliminar "${document.title}"?\n\n'
-            'Esta acción no se puede deshacer.',
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Eliminar documento'),
+        content: Text('¿Querés eliminar "${document.title}"?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
           ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancelar'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Eliminar'),
-            ),
-          ],
-        );
-      },
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
     );
-
-    if (confirmed != true) {
-      return;
-    }
-
+    if (confirmed != true) return;
     await ClinicalDocumentStorageService.deleteItem(document.id);
     await ClinicalDocumentFileService.deleteStoredFile(document.filePath);
-
-    if (!mounted) {
-      return;
-    }
-
+    if (!mounted) return;
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Documento eliminado.')));
-
     await _loadDocuments();
   }
 
   @override
   Widget build(BuildContext context) {
     final List<ClinicalDocument> filtered = _filteredDocuments;
-
     return Scaffold(
       appBar: AppBar(title: const Text('Documentos clínicos')),
       floatingActionButton: FloatingActionButton.extended(
@@ -206,47 +144,38 @@ class _ClinicalDocumentsScreenState extends State<ClinicalDocumentsScreen> {
                         value: null,
                         child: Text('Todos los documentos'),
                       ),
-                      ...ClinicalDocumentType.values.map((
-                        ClinicalDocumentType type,
-                      ) {
-                        return DropdownMenuItem<ClinicalDocumentType?>(
+                      ...ClinicalDocumentType.values.map(
+                        (type) => DropdownMenuItem<ClinicalDocumentType?>(
                           value: type,
                           child: Text(type.label),
-                        );
-                      }),
+                        ),
+                      ),
                     ],
-                    onChanged: (ClinicalDocumentType? value) {
-                      setState(() => _selectedType = value);
-                    },
+                    onChanged: (value) => setState(() => _selectedType = value),
                   ),
                   const SizedBox(height: 18),
                   if (_documents.isEmpty)
                     const _EmptyState(
                       title: 'Todavía no hay documentos',
                       message:
-                          'Agregá recetas, órdenes, certificados, altas y otros documentos clínicos.',
+                          'Agregá recetas, órdenes, certificados y otros documentos clínicos.',
                     )
                   else if (filtered.isEmpty)
                     const _EmptyState(
                       title: 'No encontramos resultados',
-                      message:
-                          'Probá con otra búsqueda o seleccioná una categoría diferente.',
+                      message: 'Probá con otra búsqueda o categoría.',
                     )
                   else
-                    ...filtered.map((ClinicalDocument document) {
-                      return Padding(
+                    ...filtered.map(
+                      (document) => Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: ClinicalDocumentCard(
                           document: document,
-                          onOpen: () => _openDocument(document),
-                          onShare: document.hasFile
-                              ? () => _shareDocument(document)
-                              : null,
                           onEdit: () => _openForm(document),
                           onDelete: () => _deleteDocument(document),
                         ),
-                      );
-                    }),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -257,34 +186,27 @@ class _ClinicalDocumentsScreenState extends State<ClinicalDocumentsScreen> {
 class _EmptyState extends StatelessWidget {
   final String title;
   final String message;
-
   const _EmptyState({required this.title, required this.message});
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 56, horizontal: 24),
-      child: Column(
-        children: <Widget>[
-          Icon(
-            Icons.folder_open_outlined,
-            size: 72,
-            color: Theme.of(context).colorScheme.outline,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            message,
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 56, horizontal: 24),
+    child: Column(
+      children: <Widget>[
+        Icon(
+          Icons.folder_open_outlined,
+          size: 72,
+          color: Theme.of(context).colorScheme.outline,
+        ),
+        const SizedBox(height: 16),
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleLarge,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 8),
+        Text(message, textAlign: TextAlign.center),
+      ],
+    ),
+  );
 }

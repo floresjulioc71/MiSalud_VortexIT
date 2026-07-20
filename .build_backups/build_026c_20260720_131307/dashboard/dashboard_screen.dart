@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../clinical_documents/screens/clinical_documents_screen.dart';
-
 import '../../../app/routes.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_constants.dart';
@@ -106,15 +104,6 @@ class DashboardScreen extends StatelessWidget {
           icon: const Icon(Icons.groups_outlined),
         ),
         actions: [
-          IconButton(
-            tooltip: 'Documentos clínicos',
-            onPressed: () => Navigator.of(context).push<void>(
-              MaterialPageRoute<void>(
-                builder: (_) => const ClinicalDocumentsScreen(),
-              ),
-            ),
-            icon: const Icon(Icons.folder_shared_outlined),
-          ),
           IconButton(
             tooltip: 'Administrar grupo familiar',
             onPressed: () {

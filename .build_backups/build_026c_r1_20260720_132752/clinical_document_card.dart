@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import '../models/clinical_document.dart';
@@ -122,7 +120,7 @@ class ClinicalDocumentCard extends StatelessWidget {
                         contentPadding: EdgeInsets.zero,
                       ),
                     ),
-                    if (document.hasFile && !Platform.isLinux)
+                    if (document.hasFile)
                       const PopupMenuItem<String>(
                         value: 'share',
                         child: ListTile(

@@ -1,10 +1,8 @@
 import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
-import 'package:open_filex/open_filex.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 class StoredClinicalFile {
   final String fileName;
@@ -88,22 +86,6 @@ class ClinicalDocumentFileService {
     );
   }
 
-  static Future<void> openStoredFile(String filePath) async {
-    await _requireFile(filePath);
-    await OpenFilex.open(filePath);
-  }
-
-  static Future<void> shareStoredFile({
-    required String filePath,
-    required String title,
-  }) async {
-    await _requireFile(filePath);
-
-    await SharePlus.instance.share(
-      ShareParams(text: title, files: <XFile>[XFile(filePath)]),
-    );
-  }
-
   static Future<void> deleteStoredFile(String filePath) async {
     if (filePath.trim().isEmpty) {
       return;
@@ -122,12 +104,6 @@ class ClinicalDocumentFileService {
     }
 
     return File(filePath).exists();
-  }
-
-  static Future<void> _requireFile(String filePath) async {
-    if (filePath.trim().isEmpty || !await File(filePath).exists()) {
-      throw const FileSystemException('El archivo adjunto no está disponible.');
-    }
   }
 
   static String _safeSegment(String value) {
