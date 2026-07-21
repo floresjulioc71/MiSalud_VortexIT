@@ -92,6 +92,7 @@ class DashboardScreen extends StatelessWidget {
         title: 'Respaldo',
         subtitle: 'Exportar y restaurar datos',
         icon: AppIcons.backup,
+        routeName: AppRoutes.backup,
       ),
     ];
 
