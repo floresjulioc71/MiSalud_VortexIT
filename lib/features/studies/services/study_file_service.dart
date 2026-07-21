@@ -26,7 +26,7 @@ class StudyFileService {
   static final ImagePicker _imagePicker = ImagePicker();
 
   static Future<StudyAttachmentResult?> pickDocument() async {
-    final FilePickerResult? result = await FilePicker.pickFiles(
+    final FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: <String>['pdf', 'jpg', 'jpeg', 'png', 'webp'],
       allowMultiple: false,
@@ -142,11 +142,16 @@ class StudyFileService {
 
     final Directory directory = await memberStudyDirectory();
     final String extension = p.extension(originalName).toLowerCase();
+
     final String safeBaseName = p
         .basenameWithoutExtension(originalName)
         .replaceAll(RegExp(r'[^a-zA-Z0-9_-]+'), '_');
+
     final String fileName =
-        '${DateTime.now().microsecondsSinceEpoch}_${safeBaseName.isEmpty ? 'estudio' : safeBaseName}$extension';
+        '${DateTime.now().microsecondsSinceEpoch}_'
+        '${safeBaseName.isEmpty ? 'estudio' : safeBaseName}'
+        '$extension';
+
     final String destinationPath = p.join(directory.path, fileName);
 
     await File(sourcePath).copy(destinationPath);

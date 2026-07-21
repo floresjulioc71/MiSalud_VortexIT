@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/constants/app_constants.dart';
 import '../core/services/navigation_service.dart';
+import '../features/security/widgets/security_lifecycle_gate.dart';
 import 'routes.dart';
 import 'theme.dart';
 
@@ -17,6 +18,9 @@ class MiSaludApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       initialRoute: AppRoutes.familySelector,
       routes: AppRoutes.routes,
+      builder: (BuildContext context, Widget? child) {
+        return SecurityLifecycleGate(child: child ?? const SizedBox.shrink());
+      },
     );
   }
 }

@@ -17,7 +17,7 @@ class BackupFileService {
         ? defaultFileName
         : '$defaultFileName.${BackupConstants.fileExtension}';
 
-    final String? selectedPath = await FilePicker.saveFile(
+    final String? selectedPath = await FilePicker.platform.saveFile(
       dialogTitle: 'Guardar respaldo de MiSalud',
       fileName: fileName,
       type: FileType.custom,
@@ -45,7 +45,7 @@ class BackupFileService {
   }
 
   Future<Map<String, dynamic>?> openBackup() async {
-    final FilePickerResult? result = await FilePicker.pickFiles(
+    final FilePickerResult? result = await FilePicker.platform.pickFiles(
       dialogTitle: 'Seleccionar respaldo de MiSalud',
       type: FileType.custom,
       allowedExtensions: <String>[BackupConstants.fileExtension],

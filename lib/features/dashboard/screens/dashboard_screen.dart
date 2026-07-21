@@ -95,6 +95,12 @@ class DashboardScreen extends StatelessWidget {
         icon: AppIcons.backup,
         routeName: AppRoutes.backup,
       ),
+      const _DashboardItem(
+        title: 'Seguridad',
+        subtitle: 'PIN y protección de acceso',
+        icon: Icons.security_outlined,
+        routeName: AppRoutes.securitySettings,
+      ),
     ];
 
     final String activeName = FamilyStorageService.activeMember.name;
