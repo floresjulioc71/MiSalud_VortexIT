@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../clinical_documents/screens/clinical_documents_screen.dart';
-
 import '../../../app/routes.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/services/navigation_service.dart';
+import '../../clinical_documents/screens/clinical_documents_screen.dart';
 import '../../family/services/family_storage_service.dart';
 import '../../health_controls/screens/health_controls_screen.dart';
+import '../../reports/screens/medical_report_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -87,6 +87,7 @@ class DashboardScreen extends StatelessWidget {
         title: 'Informe PDF',
         subtitle: 'Resumen médico personal',
         icon: AppIcons.reports,
+        opensMedicalReport: true,
       ),
       const _DashboardItem(
         title: 'Respaldo',
@@ -106,7 +107,7 @@ class DashboardScreen extends StatelessWidget {
           onPressed: _changeMember,
           icon: const Icon(Icons.groups_outlined),
         ),
-        actions: [
+        actions: <Widget>[
           IconButton(
             tooltip: 'Documentos clínicos',
             onPressed: () => Navigator.of(context).push<void>(
@@ -127,13 +128,13 @@ class DashboardScreen extends StatelessWidget {
       ),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.large),
-        children: [
+        children: <Widget>[
           Card(
             color: Theme.of(context).colorScheme.primaryContainer,
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.large),
               child: Row(
-                children: [
+                children: <Widget>[
                   const CircleAvatar(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
@@ -143,7 +144,7 @@ class DashboardScreen extends StatelessWidget {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: <Widget>[
                         const Text('Historia clínica de'),
                         Text(
                           activeName,
@@ -224,9 +225,18 @@ class _DashboardCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           if (item.opensHealthControls) {
-            Navigator.of(context).push(
+            Navigator.of(context).push<void>(
               MaterialPageRoute<void>(
                 builder: (_) => const HealthControlsScreen(),
+              ),
+            );
+            return;
+          }
+
+          if (item.opensMedicalReport) {
+            Navigator.of(context).push<void>(
+              MaterialPageRoute<void>(
+                builder: (_) => const MedicalReportScreen(),
               ),
             );
             return;
@@ -243,7 +253,7 @@ class _DashboardCard extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.medium),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Icon(item.icon, color: AppColors.primary, size: 34),
               const Spacer(),
               Text(
@@ -275,6 +285,7 @@ class _DashboardItem {
   final IconData icon;
   final String? routeName;
   final bool opensHealthControls;
+  final bool opensMedicalReport;
 
   const _DashboardItem({
     required this.title,
@@ -282,5 +293,6 @@ class _DashboardItem {
     required this.icon,
     this.routeName,
     this.opensHealthControls = false,
+    this.opensMedicalReport = false,
   });
 }
