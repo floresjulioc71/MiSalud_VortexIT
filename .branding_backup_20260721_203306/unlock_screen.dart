@@ -19,6 +19,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
 
   String _enteredPin = '';
   String? _errorMessage;
+
   bool _isChecking = false;
 
   void _addDigit(String digit) {
@@ -95,8 +96,6 @@ class _UnlockScreenState extends State<UnlockScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
     final bool maximumAttemptsReached =
         SecurityService.hasReachedMaximumAttempts();
 
@@ -112,8 +111,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: widget.canClose,
-          title: const Text('MiSalud'),
-          centerTitle: true,
+          title: const Text('Desbloquear MiSalud'),
         ),
         body: SafeArea(
           child: Center(
@@ -124,74 +122,32 @@ class _UnlockScreenState extends State<UnlockScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Container(
-                      width: 104,
-                      height: 104,
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(28),
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.18),
-                            blurRadius: 18,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
-                      ),
-                      child: Image.asset(
-                        'assets/images/green_cross.png',
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    const SizedBox(height: 22),
-                    Text(
-                      'MiSalud',
-                      textAlign: TextAlign.center,
-                      style: textTheme.displaySmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
-                        children: <InlineSpan>[
-                          TextSpan(
-                            text: 'powered by ',
-                            style: TextStyle(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          const TextSpan(
-                            text: 'Vortex',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          TextSpan(
-                            text: 'IT',
-                            style: TextStyle(
-                              color: colorScheme.onSurface,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ],
+                    CircleAvatar(
+                      radius: 44,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer,
+                      child: Icon(
+                        Icons.lock_outline,
+                        size: 44,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      'Ingresá tu PIN de 4 dígitos para acceder '
-                      'a tu información médica.',
+                      'Aplicación protegida',
                       textAlign: TextAlign.center,
-                      style: textTheme.bodyLarge,
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Ingresá tu PIN de 4 dígitos para acceder '
+                      'a la información médica.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    const SizedBox(height: 30),
                     PinIndicator(
                       enteredDigits: _enteredPin.length,
                       totalDigits: _pinLength,
@@ -209,7 +165,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
                                   key: ValueKey<String>(_errorMessage!),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: colorScheme.error,
+                                    color: Theme.of(context).colorScheme.error,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -238,7 +194,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
                             children: <Widget>[
                               Icon(
                                 Icons.warning_amber_rounded,
-                                color: colorScheme.error,
+                                color: Theme.of(context).colorScheme.error,
                               ),
                               const SizedBox(width: 12),
                               const Expanded(

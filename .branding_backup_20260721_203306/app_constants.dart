@@ -2,7 +2,7 @@ class AppConstants {
   AppConstants._();
 
   // Información de la aplicación
-  static const String appName = 'MiSalud';
+  static const String appName = 'MiSalud VortexIT';
   static const String appVersion = 'v0.1';
   static const String appBuild = '003A';
 
