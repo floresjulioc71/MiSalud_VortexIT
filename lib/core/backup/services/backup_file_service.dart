@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 
@@ -17,15 +18,26 @@ class BackupFileService {
         ? defaultFileName
         : '$defaultFileName.${BackupConstants.fileExtension}';
 
+    final String jsonContent = const JsonEncoder.withIndent(
+      '  ',
+    ).convert(backup);
+
+    final Uint8List backupBytes = Uint8List.fromList(utf8.encode(jsonContent));
+
     final String? selectedPath = await FilePicker.platform.saveFile(
       dialogTitle: 'Guardar respaldo de MiSalud',
       fileName: fileName,
       type: FileType.custom,
       allowedExtensions: <String>[BackupConstants.fileExtension],
+      bytes: backupBytes,
     );
 
     if (selectedPath == null) {
       return null;
+    }
+
+    if (Platform.isAndroid || Platform.isIOS) {
+      return File(selectedPath);
     }
 
     final String finalPath =
@@ -33,13 +45,11 @@ class BackupFileService {
         ? selectedPath
         : '$selectedPath.${BackupConstants.fileExtension}';
 
-    final String jsonContent = const JsonEncoder.withIndent(
-      '  ',
-    ).convert(backup);
-
     final File file = File(finalPath);
 
-    await file.writeAsString(jsonContent, flush: true);
+    if (!await file.exists()) {
+      await file.writeAsBytes(backupBytes, flush: true);
+    }
 
     return file;
   }
@@ -50,30 +60,40 @@ class BackupFileService {
       type: FileType.custom,
       allowedExtensions: <String>[BackupConstants.fileExtension],
       allowMultiple: false,
+      withData: Platform.isAndroid || Platform.isIOS,
     );
 
     if (result == null) {
       return null;
     }
 
-    final String? path = result.files.single.path;
+    final PlatformFile selectedFile = result.files.single;
 
-    if (path == null) {
-      throw const FileSystemException(
-        'No fue posible obtener la ubicación del respaldo.',
-      );
+    String jsonContent;
+
+    if (selectedFile.bytes != null) {
+      jsonContent = utf8.decode(selectedFile.bytes!);
+    } else {
+      final String? path = selectedFile.path;
+
+      if (path == null) {
+        throw const FileSystemException(
+          'No fue posible obtener la ubicación del respaldo.',
+        );
+      }
+
+      final File file = File(path);
+
+      if (!await file.exists()) {
+        throw FileSystemException(
+          'El archivo de respaldo seleccionado no existe.',
+          path,
+        );
+      }
+
+      jsonContent = await file.readAsString();
     }
 
-    final File file = File(path);
-
-    if (!await file.exists()) {
-      throw FileSystemException(
-        'El archivo de respaldo seleccionado no existe.',
-        path,
-      );
-    }
-
-    final String jsonContent = await file.readAsString();
     final Object? decoded = jsonDecode(jsonContent);
 
     if (decoded is! Map) {

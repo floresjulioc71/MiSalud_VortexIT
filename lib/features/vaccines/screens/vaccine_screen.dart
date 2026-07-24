@@ -669,20 +669,34 @@ class _VaccineEditScreenState extends State<VaccineEditScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.large),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    'Comprobantes (${_attachments.length})',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
+            Text(
+              'Comprobantes (${_attachments.length})',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: AppSpacing.small),
+            Text(
+              'Podés adjuntar una imagen o un archivo PDF del certificado de vacunación.',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.medium),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.tonalIcon(
+                onPressed: _addingFiles ? null : _addFiles,
+                icon: _addingFiles
+                    ? const SizedBox.square(
+                        dimension: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.attach_file),
+                label: Text(
+                  _addingFiles ? 'Adjuntando...' : 'Adjuntar comprobante',
                 ),
-                FilledButton.tonalIcon(
-                  onPressed: _addingFiles ? null : _addFiles,
-                  icon: const Icon(Icons.attach_file),
-                  label: const Text('Adjuntar'),
-                ),
-              ],
+              ),
             ),
             const SizedBox(height: AppSpacing.small),
             if (_attachments.isEmpty)
