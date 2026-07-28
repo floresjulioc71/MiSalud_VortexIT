@@ -32,9 +32,25 @@ class ReportSectionUtils {
     String key, {
     String fallback = '-',
   }) {
-    final String rawDate = value(item, key, fallback: '');
+    /*
+     * Las fechas deben leerse directamente desde el valor original.
+     *
+     * No se utiliza value() porque las fechas ISO contienen puntos:
+     *
+     * 2020-07-15T00:00:00.000
+     *
+     * La limpieza de valores enum podría interpretar incorrectamente
+     * el segmento ".000" como si fuera parte de un enum.
+     */
+    final Object? rawValue = item[key];
 
-    if (rawDate.isEmpty) {
+    if (rawValue == null) {
+      return fallback;
+    }
+
+    final String rawDate = rawValue.toString().trim();
+
+    if (rawDate.isEmpty || rawDate == 'null') {
       return fallback;
     }
 
@@ -54,9 +70,19 @@ class ReportSectionUtils {
     String key, {
     String fallback = '-',
   }) {
-    final String rawDate = value(item, key, fallback: '');
+    /*
+     * Las fechas ISO se procesan directamente para conservar
+     * correctamente los milisegundos y el año.
+     */
+    final Object? rawValue = item[key];
 
-    if (rawDate.isEmpty) {
+    if (rawValue == null) {
+      return fallback;
+    }
+
+    final String rawDate = rawValue.toString().trim();
+
+    if (rawDate.isEmpty || rawDate == 'null') {
       return fallback;
     }
 
@@ -136,7 +162,20 @@ class ReportSectionUtils {
   }
 
   static String _cleanEnumValue(String value) {
-    if (!value.contains('.')) {
+    /*
+     * Solo limpia valores que realmente parecen enums:
+     *
+     * BloodType.oPositive
+     * VaccineStatus.completed
+     *
+     * No modifica fechas, números decimales, correos,
+     * nombres de archivos ni otros textos que contengan puntos.
+     */
+    final RegExp enumPattern = RegExp(
+      r'^[A-Za-z_][A-Za-z0-9_]*\.[A-Za-z_][A-Za-z0-9_]*$',
+    );
+
+    if (!enumPattern.hasMatch(value)) {
       return value;
     }
 

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 import '../models/medical_report_data.dart';
 import 'pdf_report_service.dart';
@@ -21,11 +22,24 @@ class MedicalPdfGeneratorService {
   const MedicalPdfGeneratorService._();
 
   static Future<File> generate(MedicalReportData report) async {
+    /*
+     * Noto Sans incorpora soporte Unicode.
+     *
+     * Esto permite mostrar correctamente:
+     * - Tildes
+     * - Letra ñ
+     * - Caracteres especiales
+     * - Fechas y números dentro del reporte
+     */
+    final pw.Font regularFont = await PdfGoogleFonts.notoSansRegular();
+    final pw.Font boldFont = await PdfGoogleFonts.notoSansBold();
+
     final pw.Document pdf = pw.Document(
       title: 'Historia Clínica - ${report.patientName}',
       author: 'MiSalud VortexIT',
       subject: 'Reporte médico personal',
       creator: 'MiSalud VortexIT',
+      theme: pw.ThemeData.withFont(base: regularFont, bold: boldFont),
     );
 
     pdf.addPage(
